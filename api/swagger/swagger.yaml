@@ -1,0 +1,93 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: EOI movies
+host: localhost:10010
+basePath: /api
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /movies/{movie_uuid}:
+    x-swagger-router-controller: movies
+    get:
+      description: Obtenemos la película indicada
+      operationId: getMovie
+      parameters:
+        - in: path
+          name: movie_uuid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success
+          schema:
+            items:
+              $ref: "#/definitions/MoviesResponse"
+        default:
+          description: Error
+          schema:
+            items:
+              $ref: "#/definitions/ErrorResponse"
+  /movies:
+    x-swagger-router-controller: movies
+    get:
+      description: Obtenemos todas las películas
+      operationId: getMovies
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: "#/definitions/MoviesResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      parameters:
+      - name: movie
+        in: body
+        description: Peliculas que serán añadidas al catalogo
+        required: true
+        schema:
+          $ref: "#/definitions/MoviesResponse"
+      operationId: newMovie
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: "#/definitions/MoviesResponse"
+    put:
+      description: Actualizamos la película indicada
+      operationId: putMovie
+      parameters:
+      - in: body
+        name: movie_uuid
+        required: true
+        schema:
+          $ref: "#/definitions/MoviesResponse"
+      responses:
+        '200':
+          description: Success
+          schema:
+            items:
+              $ref: "#/definitions/MoviesResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+definitions:
+  MoviesResponse:
+    required:
+      - name
+    properties:
+      name:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
